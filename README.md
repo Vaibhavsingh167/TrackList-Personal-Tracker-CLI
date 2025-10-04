@@ -4,7 +4,7 @@ TrackList is a simple, crash-safe command-line interface (CLI) tool designed to 
 
 The interface is designed to be responsive and provides a friendly, emoji-enhanced user experience. ✨
 
-![ View of Tool](https://ibb.co/ns9XXn8Y)
+![ View of Tool](https://i.ibb.co/8DN6H9Kx/Screenshot-2025-10-04-193605.png)
 
 -----
 
