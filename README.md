@@ -31,9 +31,11 @@ Follow these simple steps to get the tracker up and running.
 2.  Open your terminal or command prompt.
 3.  Navigate to the directory where you saved `app.py`.
 4.  Run the application using the command:
+
     ```bash
     python3 app.py
     ```
+    
 5.  That's it\! Follow the on-screen prompts to manage your lists. The application will automatically create the necessary files and directories on the first run.
 
 -----
