@@ -142,7 +142,7 @@ def display_items(items, section):
         print()
 
 def menu(section):
-    time.sleep(2)
+    time.sleep(1)
     term_w = shutil.get_terminal_size((100, 30)).columns
     menu_lines = [
         f"------- {section.upper()} MANAGER MENU -------",
