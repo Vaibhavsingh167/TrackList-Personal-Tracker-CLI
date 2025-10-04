@@ -4,6 +4,8 @@ TrackList is a simple, crash-safe command-line interface (CLI) tool designed to 
 
 The interface is designed to be responsive and provides a friendly, emoji-enhanced user experience. ✨
 
+![ View of Tool](https://ibb.co/ns9XXn8Y)
+
 -----
 
 ## Features
@@ -35,7 +37,7 @@ Follow these simple steps to get the tracker up and running.
     ```bash
     python3 app.py
     ```
-    
+
 5.  That's it\! Follow the on-screen prompts to manage your lists. The application will automatically create the necessary files and directories on the first run.
 
 -----
