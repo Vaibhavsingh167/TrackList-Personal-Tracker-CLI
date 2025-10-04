@@ -2,8 +2,6 @@ import os
 import shutil
 import time
 
-# ─────────────── ASCII ART & INTRO ─────────────── #
-
 ASCII_ART = r""" 
    ____    __    ____  _______  __        ______   ______   .___  ___.  _______                   
    \   \  /  \  /   / |   ____||  |      /      | /  __  \  |   \/   | |   ____|                  
@@ -83,8 +81,6 @@ def intro_screen():
     print("\n")
     time.sleep(1)
 
-# ─────────────── RECORDS MANAGER ─────────────── #
-
 FILES_DIR = "files"
 RECORDS_FILE = os.path.join(FILES_DIR, "records.txt")
 os.makedirs(FILES_DIR, exist_ok=True)
@@ -108,7 +104,7 @@ def load_section(section):
                 elif current == section and line:
                     items.append(line)
     except Exception as e:
-        print(f"Error reading {section}: {e}")
+        print(f"Oops! Couldn't read {section.lower()} 😅 Error: {e}")
     return items
 
 def save_section(section, items):
@@ -134,25 +130,37 @@ def save_section(section, items):
         with open(RECORDS_FILE, "w") as f:
             f.writelines(new_lines)
     except Exception as e:
-        print(f"Error saving {section}: {e}")
+        print(f"Oops! Couldn't save {section.lower()} 😅 Error: {e}")
 
 def display_items(items, section):
     if not items:
-        print(f"\nNo {section.lower()} found.\n")
+        print(f"\nNo {section.lower()} yet! Maybe add some? 🤔\n")
     else:
-        print(f"\n{section.capitalize()}:")
+        print(f"\nHere are your {section.lower()}:")
         for idx, item in enumerate(items, start=1):
             print(f"{idx}. {item}")
         print()
 
 def menu(section):
-    print(f"\n--- {section.upper()} MANAGER MENU ---")
-    print("1. View")
-    print("2. Add")
-    print("3. Remove")
-    print("4. Update")
-    print("5. Exit Program")
-    print("6. Back to Section Selection")
+    time.sleep(2)
+    term_w = shutil.get_terminal_size((100, 30)).columns
+    menu_lines = [
+        f"------- {section.upper()} MANAGER MENU -------",
+        "1. View all items",
+        "2. Add new item",
+        "3. Remove an item",
+        "4. Update an item",
+        "5. Exit Program",
+        "6. Go back to choose section"
+    ]
+    
+    box_width = max(len(line) for line in menu_lines) + 4  
+    border = "+" + "-" * (box_width - 2) + "+"
+    
+    box = [border] + [f"| {line.ljust(box_width - 4)} |" for line in menu_lines] + [border]
+    
+    for line in box:
+        print(line.center(term_w))
 
 def section_loop(section):
     items = load_section(section)
@@ -161,46 +169,47 @@ def section_loop(section):
             menu(section)
             choice = input("Enter your choice (1-6): ").strip()
             if not choice.isdigit() or int(choice) not in range(1,7):
-                raise ValueError("Invalid menu option.")
+                raise ValueError(f"Oops! '{choice}' is not a valid option 😅 Pick a number between 1 and 6.")
             choice = int(choice)
 
             if choice == 1:
                 display_items(items, section)
             elif choice == 2:
-                new_item = input(f"Enter new {section.lower()[:-1]}: ").strip()
+                new_item = input(f"Type the new {section.lower()[:-1]} (be creative!): ").strip()
                 if new_item:
                     items.append(new_item)
                     save_section(section, items)
-                    print(f"{section[:-1].capitalize()} added successfully!")
+                    print(f"Yay! '{new_item}' added to {section.lower()} ✅")
                 else:
-                    print("Empty entry not allowed.")
+                    print("Oops! You didn’t type anything 😅 Give it another shot!")
             elif choice == 3:
                 display_items(items, section)
-                idx = input(f"Enter the number to remove: ").strip()
+                idx = input(f"Enter the number of the item to remove (e.g., 1, 2, 3): ").strip()
                 if not idx.isdigit() or int(idx) not in range(1, len(items)+1):
-                    print("Invalid number.")
+                    print("Hmm, that number doesn’t match any item 🤔 Try again with a valid number.")
                 else:
                     removed = items.pop(int(idx)-1)
                     save_section(section, items)
-                    print(f"Removed '{removed}' successfully!")
+                    print(f"Removed '{removed}' successfully! 🗑️")
             elif choice == 4:
                 display_items(items, section)
-                idx = input(f"Enter the number to update: ").strip()
+                idx = input(f"Enter the number of the item to update: ").strip()
                 if not idx.isdigit() or int(idx) not in range(1, len(items)+1):
-                    print("Invalid number.")
+                    print("Hmm, that number doesn’t match any item 🤔 Try again with a valid number.")
                 else:
-                    new_item = input("Enter updated value: ").strip()
+                    new_item = input("Type the updated value: ").strip()
                     if new_item:
+                        old_item = items[int(idx)-1]
                         items[int(idx)-1] = new_item
                         save_section(section, items)
-                        print("Updated successfully!")
+                        print(f"Sweet! '{old_item}' updated to '{new_item}' ✅")
                     else:
-                        print("Empty entry not allowed.")
+                        print("Oops! You didn’t type anything 😅 Give it another shot!")
             elif choice == 5:
-                print("Exiting program. Goodbye!")
+                print("Okay, exiting program. Catch you later! 👋")
                 exit(0)
             elif choice == 6:
-                print("Returning to section selection...")
+                print("Cool, returning to section selection... 🔄")
                 break
         except ValueError as ve:
             print(f"Input Error: {ve}")
@@ -211,10 +220,24 @@ def main():
     intro_screen()
     init_file()
     while True:
+        print("\nWhich list do you want to access? Pick a number:")
+        for i, sec in enumerate(SECTIONS, start=1):
+            print(f"{i}. {sec.capitalize()}")
+        
         section = ""
-        while section.upper() not in SECTIONS:
-            section = input("Which list do you want to access? (tasks/habits/expenses): ").strip().upper()
+        while True:
+            choice = input("Enter the number of your choice: ").strip()
+            if not choice.isdigit() or int(choice) not in range(1, len(SECTIONS)+1):
+                print(f"Oops! '{choice}' is not valid 😅 Pick a number between 1 and {len(SECTIONS)}.")
+            else:
+                section = SECTIONS[int(choice)-1]
+                break
+        
         section_loop(section)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nBye! Exiting program safely 👋")
+        exit(0)
